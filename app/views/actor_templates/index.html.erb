@@ -1,54 +1,62 @@
-<h1>
-  List of all actors
-</h1>
+<!-- app/views/actor_templates/index.html.erb -->
+
+<h1>List of all actors</h1>
+
+<!-- CREATE NEW ACTOR FORM -->
+<form action="/insert_actor" method="post">
+  <!-- If CSRF protection is enabled (default in Rails), include the authenticity token: -->
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+  <p>
+    <label for="actor_name">Name</label><br>
+    <input id="actor_name" type="text" name="query_name" placeholder="Actor's name" />
+  </p>
+
+  <p>
+    <label for="actor_dob">Dob</label><br>
+    <!-- You could use type="date", or just a text box with a placeholder -->
+    <input id="actor_dob" type="text" name="query_dob" placeholder="mm/dd/yyyy" />
+  </p>
+
+  <p>
+    <label for="actor_bio">Bio</label><br>
+    <textarea id="actor_bio" name="query_bio" placeholder="Short biography..."></textarea>
+  </p>
+
+  <p>
+    <label for="actor_image">Image</label><br>
+    <input id="actor_image" type="text" name="query_image_url" placeholder="Image URL" />
+  </p>
+
+  <button type="submit">Create actor</button>
+</form>
 
 <hr>
 
+<!-- EXISTING TABLE OF ACTORS -->
 <table border="1">
   <tr>
-    <th>
-      ID
-    </th>
-
-    <th>
-      Image
-    </th>
-
-    <th>
-      Name
-    </th>
-
-    <th>
-      Dob
-    </th>
-
-    <th>
-    </th>
+    <th>ID</th>
+    <th>Image</th>
+    <th>Name</th>
+    <th>Dob</th>
+    <th></th>
   </tr>
 
-  <% @list_of_actors.each do |an_actor| %>
-  <tr>
-    <td>
-      <%= an_actor.id %>
-    </td>
-
-    <td>
-      <img src="<%= an_actor.image %>" style="width:250px;">
-    </td>
-
-    <td>
-      <%= an_actor.name %>
-    </td>
-
-    <td>
-      <%= an_actor.dob %>
-    </td>
-
-    <td>
-      <a href="/actors/<%= an_actor.id %>">
-        Show details
-      </a>
-    </td>
-  </tr>
+  <% @list_of_actors.each do |actor| %>
+    <tr>
+      <td><%= actor.id %></td>
+      <td>
+        <% if actor.image.present? %>
+          <img src="<%= actor.image %>" alt="<%= actor.name %>" style="width: 100px;">
+        <% end %>
+      </td>
+      <td><%= actor.name %></td>
+      <td><%= actor.dob %></td>
+      <td>
+        <%= link_to "Show details", "/actors/#{actor.id}" %>
+        <!-- etc. -->
+      </td>
+    </tr>
   <% end %>
 </table>

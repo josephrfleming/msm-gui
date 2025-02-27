@@ -1,75 +1,91 @@
-<h1>
-  Movie #<%= @the_movie.id %> details
-</h1>
+<!-- app/views/movie_templates/show.html.erb -->
 
-<a href="/movies">
-  Go back
-</a>
+<!-- Instead of displaying the movie title, display "Movie #[ID] details" -->
+<h1>Movie #<%= @the_movie.id %> details</h1>
+
+<p>
+  <%= link_to "Go back", "/movies" %> |
+  <%= link_to "Delete movie", "/delete_movie/#{@the_movie.id}", data: { confirm: "Are you sure?" } %>
+</p>
+
+<hr>
+
+<!-- Remove the "Edit this Movie" heading, keep the form -->
+<form action="/update_movie/<%= @the_movie.id %>" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+  <p>
+    <label for="movie_title">Title</label><br>
+    <input id="movie_title" type="text" name="query_title" value="<%= @the_movie.title %>">
+  </p>
+
+  <p>
+    <label for="movie_year">Year</label><br>
+    <input id="movie_year" type="number" name="query_year" value="<%= @the_movie.year %>">
+  </p>
+
+  <p>
+    <label for="movie_duration">Duration</label><br>
+    <input id="movie_duration" type="number" name="query_duration" value="<%= @the_movie.duration %>">
+  </p>
+
+  <p>
+    <label for="movie_description">Description</label><br>
+    <textarea id="movie_description" name="query_description"><%= @the_movie.description %></textarea>
+  </p>
+
+  <p>
+    <label for="movie_image">Image</label><br>
+    <input id="movie_image" type="text" name="query_image_url" value="<%= @the_movie.image %>">
+  </p>
+
+  <p>
+    <label for="movie_director">Director ID</label><br>
+    <input id="movie_director" type="number" name="query_director_id" value="<%= @the_movie.director_id %>">
+  </p>
+
+  <button type="submit">Update movie</button>
+</form>
 
 <hr>
 
-<dl>
-  <dt>
-    Title
-  </dt>
-  <dd>
-    <%= @the_movie.title %>
-  </dd>
+<!-- READ-ONLY DATA BELOW THE FORM -->
+<h2>Title</h2>
+<p><%= @the_movie.title %></p>
 
-  <dt>
-    Year
-  </dt>
-  <dd>
-    <%= @the_movie.year %>
-  </dd>
+<h2>Year</h2>
+<p><%= @the_movie.year %></p>
 
-  <dt>
-    Duration
-  </dt>
-  <dd>
-    <%= @the_movie.duration %>
-  </dd>
+<h2>Duration</h2>
+<p><%= @the_movie.duration %> minutes</p>
 
-  <dt>
-    Description
-  </dt>
-  <dd>
-    <%= @the_movie.description %>
-  </dd>
+<h2>Description</h2>
+<p><%= @the_movie.description %></p>
 
-  <dt>
-    Image
-  </dt>
-  <dd>
-    <img src="<%= @the_movie.image %>" style="width:250px;">
-  </dd>
+<h2>Image</h2>
+<% if @the_movie.image.present? %>
+  <img src="<%= @the_movie.image %>" style="width:300px;">
+<% else %>
+  None
+<% end %>
 
-  <dt>
-    Director
-  </dt>
-  <dd>
-    <% dir_id = @the_movie.director_id %>
-    
-    <% matching_directors = Director.where({ :id => dir_id }) %>
-    
-    <% the_director = matching_directors.at(0) %>
+<h2>Director</h2>
+<p>
+  <% if @the_movie.director_id.present? %>
+    <%= Director.find_by(id: @the_movie.director_id)&.name || "Unknown" %>
+  <% else %>
+    Unknown
+  <% end %>
+</p>
 
-    <%= the_director.name %>
-  </dd>
+<h2>Created at</h2>
+<p><%= time_ago_in_words(@the_movie.created_at) %> ago</p>
 
-  <dt>
-    Created at
-  </dt>
-  <dd>
-    <%= @the_movie.created_at %>
-  </dd>
-
-  <dt>
-    Updated at
-  </dt>
-  <dd>
-    <%= @the_movie.updated_at %>
-  </dd>
-</dl>
+<h2>Updated at</h2>
+<p><%= time_ago_in_words(@the_movie.updated_at) %> ago</p>
 
 <hr>
+<p>
+  <strong>Delete This Movie:</strong>
+  <a href="/delete_movie/<%= @the_movie.id %>" data-confirm="Are you sure?">Delete</a>
+</p>

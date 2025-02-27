@@ -1,54 +1,55 @@
-<h1>
-  List of all directors
-</h1>
+<!-- app/views/director_templates/index.html.erb -->
+
+<h1>List of Directors</h1>
+
+<!-- CREATE FORM -->
+<form action="/insert_director" method="post">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+  <p>
+    <label>Name</label><br>
+    <input type="text" name="query_name" />
+  </p>
+
+  <p>
+    <label>DOB</label><br>
+    <input type="date" name="query_dob" />
+  </p>
+
+  <p>
+    <label>Bio</label><br>
+    <textarea name="query_bio"></textarea>
+  </p>
+
+  <p>
+    <label>Image</label><br>
+    <input type="text" name="query_image_url" />
+  </p>
+
+  <button type="submit">Create director</button>
+</form>
 
 <hr>
 
-<table border="1">
-  <tr>
-    <th>
-      ID
-    </th>
+<!-- EXISTING DIRECTORS LIST -->
+<ul>
+  <% @list_of_directors.each do |director| %>
+    <li style="margin-bottom: 1em;">
+      <!-- Display the director's image -->
+      <% if director.image.present? %>
+        <img 
+          src="<%= director.image %>" 
+          alt="<%= director.name %>" 
+          style="width:100px; vertical-align: middle; margin-right: 1em;"
+        >
+      <% end %>
 
-    <th>
-      Image
-    </th>
-
-    <th>
-      Name
-    </th>
-
-    <th>
-      Dob
-    </th>
-
-    <th>
-    </th>
-  </tr>
-
-  <% @list_of_directors.order({:dob => :desc}).each do |director| %>
-  <tr>
-    <td>
-      <%= director.id %>
-    </td>
-
-    <td>
-      <img src="<%= director.image %>" style="width:250px;">
-    </td>
-
-    <td>
-      <%= director.name %>
-    </td>
-
-    <td>
-      <%= director.dob %>
-    </td>
-
-    <td>
-      <a href="/directors/<%= director.id %>">
-        Show details
-      </a>
-    </td>
-  </tr>
+      <!-- Display name and DOB -->
+      <strong><%= director.name %></strong> (DOB: <%= director.dob %>)
+      |
+      <a href="/directors/<%= director.id %>">Show details</a>
+      |
+      <a href="/delete_director/<%= director.id %>">Delete</a>
+    </li>
   <% end %>
-</table>
+</ul>
